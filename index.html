@@ -1,0 +1,38 @@
+<script type="module">
+  // Primero, importa las funciones necesarias de Supabase
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.5.0/dist/supabase.min.js'
+
+  // Tu configuración de Supabase (debes reemplazar con tu URL y API Key)
+  const supabaseUrl = 'https://fcltepdtcsddeudjmzjc.supabase.co/storage/v1/object/public/usuarios//Usuarios.txt';  // Reemplaza esto con tu URL
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjbHRlcGR0Y3NkZGV1ZGptempjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzk5MDgsImV4cCI6MjA2MDk1NTkwOH0.snOcWct0K2lApgjgqfjpq67R5-NZQ1kH3vwvnImzPtM';  // Reemplaza esto con tu clave pública
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Función para leer el archivo desde Supabase
+  async function leerArchivo() {
+    // Reemplaza 'my-bucket' con el nombre de tu bucket y 'usuarios.txt' con el nombre de tu archivo
+    const { data, error } = await supabase.storage
+      .from('my-bucket')  // Reemplaza 'my-bucket' con el nombre de tu bucket
+      .download('usuarios.txt');  // Reemplaza 'usuarios.txt' con el nombre de tu archivo
+
+    if (error) {
+      console.error('Error al descargar el archivo:', error);
+    } else {
+      // Convertimos el archivo descargado en texto
+      const texto = await data.text(); // Esto lee el contenido del archivo
+
+      // Mostrar el contenido del archivo en la consola
+      console.log('Contenido del archivo:', texto);
+      
+      // Si el archivo es JSON, puedes convertirlo en un objeto
+      try {
+        const datos = JSON.parse(texto);  // Esto convierte el texto en formato JSON a un objeto
+        console.log('Datos JSON:', datos);
+      } catch (error) {
+        console.log('El archivo no es JSON válido');
+      }
+    }
+  }
+
+  // Llamamos a la función para leer el archivo
+  leerArchivo();
+</script>
