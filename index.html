@@ -9,7 +9,7 @@
         // Tu configuración de Supabase
         const supabaseUrl = 'https://fcltepdtcsddeudjmzjc.supabase.co'; // Reemplaza esto con tu URL
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjbHRlcGR0Y3NkZGV1ZGptempjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzk5MDgsImV4cCI6MjA2MDk1NTkwOH0.snOcWct0K2lApgjgqfjpq67R5-NZQ1kH3vwvnImzPtM'; // Reemplaza esto con tu clave pública
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabase1 = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Función para registrar un nuevo usuario
         async function registrarUsuario() {
@@ -17,7 +17,7 @@
             const huellaId = document.getElementById('huellaId').value;
             const contrasena = document.getElementById('contrasena').value;
 
-            const { data, error } = await supabase
+            const { data, error } = await supabase1
                 .from('usuarios')
                 .insert([{ usuario, huella_id: huellaId, contrasena }]);
 
