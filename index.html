@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Web - Registro de Usuarios</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.5.0/dist/supabase.min.js"></script>
+    <script>
+        // Tu configuración de Supabase
+        const supabaseUrl = 'https://fcltepdtcsddeudjmzjc.supabase.co'; // Reemplaza esto con tu URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjbHRlcGR0Y3NkZGV1ZGptempjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzNzk5MDgsImV4cCI6MjA2MDk1NTkwOH0.snOcWct0K2lApgjgqfjpq67R5-NZQ1kH3vwvnImzPtM'; // Reemplaza esto con tu clave pública
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Función para registrar un nuevo usuario
+        async function registrarUsuario() {
+            const usuario = document.getElementById('usuario').value;
+            const huellaId = document.getElementById('huellaId').value;
+            const contrasena = document.getElementById('contrasena').value;
+
+            const { data, error } = await supabase
+                .from('usuarios')
+                .insert([{ usuario, huella_id: huellaId, contrasena }]);
+
+            if (error) {
+                console.error('Error al registrar usuario:', error);
+                alert('Error al registrar el usuario');
+            } else {
+                alert('Usuario registrado con éxito');
+                // Registrar en logs de acceso
+                registrarLog(usuario, 'registro de nuevo usuario');
+            }
+        }
+
+        // Función para registrar un acceso en los logs
+        async function registrarLog(usuario, tipoAcceso) {
+            const { data, error } = await supabase
+                .from('logs')
+                .insert([{ usuario, tipo_acceso: tipoAcceso, fecha: new Date().toISOString() }]);
+
+            if (error) {
+                console.error('Error al registrar el log:', error);
+            } else {
+                console.log('Log registrado con éxito');
+            }
+        }
+
+        // Función para ver los logs de acceso
+        async function verLogs() {
+            const { data, error } = await supabase
+                .from('logs')
+                .select('*')
+                .order('fecha', { ascending: false });
+
+            if (error) {
+                console.error('Error al obtener los logs:', error);
+            } else {
+                console.log('Logs de acceso:', data);
+                // Mostrar los logs en la consola o en el HTML
+                const logsDiv = document.getElementById('logs');
+                logsDiv.innerHTML = data.map(log => 
+                    `<p>Usuario: ${log.usuario}, Tipo de acceso: ${log.tipo_acceso}, Fecha: ${log.fecha}</p>`
+                ).join('');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Registro de Usuarios</h1>
+    <form>
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" required><br><br>
+        
+        <label for="huellaId">ID de huella:</label>
+        <input type="text" id="huellaId" name="huellaId" required><br><br>
+
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena" required><br><br>
+
+        <button type="button" onclick="registrarUsuario()">Registrar Usuario</button>
+    </form>
+
+    <h2>Ver Logs de Acceso</h2>
+    <button type="button" onclick="verLogs()">Ver Logs</button>
+
+    <div id="logs"></div>
+</body>
+</html>
